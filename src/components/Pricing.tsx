@@ -72,7 +72,7 @@ export const Pricing = () => {
 				Access
 			</h2>
 			<h3 className='text-xl text-center text-muted-foreground pt-4 pb-8'>
-			Choose from the different plans.
+			Choose from the different plans or create the one that suits you best.
 			</h3>
 			<div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8'>
 				{pricingList.map((pricing: PricingProps) => (
