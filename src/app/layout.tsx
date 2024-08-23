@@ -8,7 +8,7 @@ import TanStackProvider from "@/components/providers/TanStackProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-	title: "QShare Subscriptions",
+	title: "QShare Management",
 	description: "Qshare subscription",
 };
 
