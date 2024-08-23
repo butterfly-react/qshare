@@ -52,7 +52,7 @@ const pricingList: PricingProps[] = [
 		price: 18319,
 		description: "Comprehensive solution for large organizations with complex needs. Yearly subscription. Cancel any time",
 		buttonText: "Buy Now",
-		benefitList: ["Up 4 Team members", "8 GB Gallery", "Up to 10 templates", "Priority support", "Cancel any time"],
+		benefitList: ["Up to 4 Team members", "8 GB Gallery", "Up to 10 templates", "Priority support", "Cancel any time."],
 		href: "/api/auth/login",
 		billing: "/year",
 		paymentLink: process.env.STRIPE_YEARLY_PAYMENT_LINK_FOUR_USERS,

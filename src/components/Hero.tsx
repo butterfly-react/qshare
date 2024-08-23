@@ -27,11 +27,12 @@ export const Hero = () => {
 							<div className='mt-5 bg-gradient-to-r from-[#667EEA] to-[#764BA2] text-transparent bg-clip-text'>
 								Subscribe with custom plans
 							</div>{" "}
+							<div className='mt-5 bg-gradient-to-r from-[#667EEA] to-[#764BA2] text-transparent bg-clip-text'>
+								Customize your plan as your wish
+							</div>{" "}
 						</h2>
 					</main>
-					{/* <a href=''>
-						<img src='https://made-with.prisma.io/dark.svg' width={220} height={130} alt='' />
-					</a> */}
+				
 
 					<p className='text-xl text-muted-foreground md:w-10/12 mx-auto lg:mx-0 text-balance'>
 						Manage your products at one place
