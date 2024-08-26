@@ -11,11 +11,13 @@ enum Plan {
   free
   popular
   premium
+  enterprise
 }
 
 enum SubscriptionPeriod {
   monthly
   yearly
+ 
 }
 
 model User {

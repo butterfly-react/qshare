@@ -28,7 +28,7 @@ export async function POST(req: Request) {
 					}
 				);
 
-                console.log(session, '!!')
+            
 				const customerId = session.customer as string;
 				const customerDetails = session.customer_details;
 
@@ -83,7 +83,7 @@ export async function POST(req: Request) {
                                     where: { id: user.id },
                                     data: { plan: "popular" },
                                 });
-                            }else if(priceId === process.env.STRIPE_MONTHLY_PRICE_ID_FIVE_USERS!){
+                            }else if(priceId === process.env.STRIPE_MONTHLY_PRICE_ID_TEN_USERS!){
                                 await prisma.subscription.upsert({
                                     where: { userId: user.id! },
                                     create: {
@@ -104,6 +104,29 @@ export async function POST(req: Request) {
                                 await prisma.user.update({
                                     where: { id: user.id },
                                     data: { plan: "premium" },
+                                });
+                                
+                            }else if(priceId === process.env.STRIPE_MONTHLY_PRICE_ID_TWENTY_USERS!){
+                                await prisma.subscription.upsert({
+                                    where: { userId: user.id! },
+                                    create: {
+                                        userId: user.id,
+                                        startDate: new Date(),
+                                        endDate: endDate,
+                                        plan: "enterprise",
+                                        period: "monthly",
+                                    },
+                                    update: {
+                                        plan: "enterprise",
+                                        period:  "yearly",
+                                        startDate: new Date(),
+                                        endDate: endDate,
+                                    },
+                                });
+    
+                                await prisma.user.update({
+                                    where: { id: user.id },
+                                    data: { plan: "enterprise" },
                                 });
                                 
                             }

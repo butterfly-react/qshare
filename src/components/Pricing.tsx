@@ -29,35 +29,35 @@ const pricingList: PricingProps[] = [
 	{
 		title: "Popular",
 		popular: PopularPlanType.NO,
-		price: { monthly: 1796, yearly: 17960 },
+		price: { monthly: 1796, yearly: 19397},
 		description: "Ideal for growing teams needing more resources and flexibility. 14 day free trial included. Cancel any time.",
 		buttonText: "Buy Now",
 		benefitList: ["Up to 4 Team members", "2 GB Gallery", "100 products", "Up to 4 templates", "Community support", "Cancel any time"],
 		href: "/api/auth/login",
 		billing: { monthly: "/month", yearly: "/year" },
-		paymentLink: { monthly: process.env.STRIPE_MONTHLY_PAYMENT_LINK_FOUR_USERS!, yearly: process.env.STRIPE_YEARLY_PAYMENT_LINK_FOUR_USERS! },
+		paymentLink: { monthly: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PAYMENT_LINK_FOUR_USERS!, yearly: process.env.NEXT_PUBLIC_STRIPE_YEARLY_PAYMENT_LINK_FOUR_USERS! },
 	},
 	{
 		title: "Premium",
 		popular: PopularPlanType.YES,
-		price: { monthly: 3890, yearly: 38900 },
+		price: { monthly: 3890, yearly: 42012 },
 		description: "Best for established teams requiring advanced features. Cancel any time.",
 		buttonText: "Buy Now",
 		benefitList: ["Up to 10 Team members", "4 GB Gallery", "Unlimited products", "Up to 6 templates", "Priority support", "Cancel any time"],
 		href: "/api/auth/login",
 		billing: { monthly: "/month", yearly: "/year" },
-		paymentLink: { monthly: process.env.STRIPE_MONTHLY_PAYMENT_LINK_FIVE_USERS!, yearly: process.env.STRIPE_YEARLY_PAYMENT_LINK_FIVE_USERS! },
+		paymentLink: { monthly: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PAYMENT_LINK_TEN_USERS!, yearly: process.env.NEXT_PUBLIC_STRIPE_YEARLY_PAYMENT_LINK_TEN_USERS! },
 	},
 	{
 		title: "Enterprise",
 		popular: PopularPlanType.NO,
-		price: { monthly: 5780, yearly: 57800 },
+		price: { monthly: 5780, yearly: 62424 },
 		description: "Comprehensive solution for large organizations with complex needs. Yearly subscription. Cancel any time",
 		buttonText: "Buy Now",
 		benefitList: ["Up to 20 Team members", "8 GB Gallery", "Unlimited products", "Up to 10 templates", "Priority support", "Cancel any time"],
 		href: "/api/auth/login",
 		billing: { monthly: "/month", yearly: "/year" },
-		paymentLink: { monthly: process.env.STRIPE_MONTHLY_PAYMENT_LINK_TEN_USERS!, yearly: process.env.STRIPE_YEARLY_PAYMENT_LINK_TEN_USERS! },
+		paymentLink: { monthly: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PAYMENT_LINK_TWENTY_USERS!, yearly: process.env.NEXT_PUBLIC_STRIPE_YEARLY_PAYMENT_LINK_TWENTY_USERS! },
 	},
 ];
 
@@ -75,8 +75,6 @@ export const Pricing = () => {
 			return newState;
 		});
 	};
-
-	console.log(isYearlyList)
 
 	return (
 		<section id="pricing" className="container">
@@ -147,8 +145,6 @@ export const Pricing = () => {
 								href={pricing.href}
 								text={pricing.buttonText}
 								paymentLink={
-
-									
 									isYearlyList[index]
 										? pricing.paymentLink.yearly
 										: pricing.paymentLink.monthly
