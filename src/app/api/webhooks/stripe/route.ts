@@ -83,7 +83,7 @@ export async function POST(req: Request) {
                                     where: { id: user.id },
                                     data: { plan: "popular" },
                                 });
-                            }else if(priceId === process.env.STRIPE_MONTHLY_PRICE_ID_TEN_USERS!){
+                            }else if(priceId === process.env.STRIPE_MONTHLY_PRICE_ID_TEN_USERS! || priceId === process.env.STRIPE_YEARLY_PRICE_ID_TEN_USERS!){
                                 await prisma.subscription.upsert({
                                     where: { userId: user.id! },
                                     create: {
@@ -106,7 +106,7 @@ export async function POST(req: Request) {
                                     data: { plan: "premium" },
                                 });
                                 
-                            }else if(priceId === process.env.STRIPE_MONTHLY_PRICE_ID_TWENTY_USERS!){
+                            }else if(priceId === process.env.STRIPE_MONTHLY_PRICE_ID_TWENTY_USERS! || || priceId === process.env.STRIPE_YEARLY_PRICE_ID_TWENTY_USERS!){
                                 await prisma.subscription.upsert({
                                     where: { userId: user.id! },
                                     create: {
