@@ -7,7 +7,7 @@ type Props = {
 
 export default function Home({ searchParams }: Props) {
 
-	const teamMembers= searchParams ? searchParams["count"] ?? "4" : "4"; // default value is "4"
+	const teamMembers= searchParams ? searchParams["count"] ?? "premium" : "premium"; // default value is "4"
 
 
 	return (
