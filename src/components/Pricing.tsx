@@ -76,6 +76,8 @@ export const Pricing = () => {
 		});
 	};
 
+	console.log(isYearlyList)
+
 	return (
 		<section id="pricing" className="container">
 			<h2 className="text-3xl md:text-4xl font-bold text-center">
@@ -145,6 +147,8 @@ export const Pricing = () => {
 								href={pricing.href}
 								text={pricing.buttonText}
 								paymentLink={
+
+									
 									isYearlyList[index]
 										? pricing.paymentLink.yearly
 										: pricing.paymentLink.monthly
