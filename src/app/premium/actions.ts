@@ -14,7 +14,7 @@ export async function isUserSubscribed() {
   if (!existingUser) return { success: false };
 
 
-  const isSubscribed = existingUser.plan === "premium" || existingUser.plan === "popular";
+  const isSubscribed = existingUser.plan === "premium" || existingUser.plan === "popular" || existingUser.plan === 'enterprise';
 
   return { success: true, subscribed: isSubscribed };
 }

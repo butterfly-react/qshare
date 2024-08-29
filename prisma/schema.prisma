@@ -12,6 +12,7 @@ enum Plan {
   popular
   premium
   enterprise
+  canceled
 }
 
 enum SubscriptionPeriod {
