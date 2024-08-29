@@ -23,7 +23,7 @@ export default function RootLayout({
 				<ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
 					<TanStackProvider>
 
-					<Navbar />
+					{/* <Navbar /> */}
 					{children}
 					</TanStackProvider>
 				</ThemeProvider>
