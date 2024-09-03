@@ -12,7 +12,7 @@ enum Plan {
   popular
   premium
   enterprise
-  canceled
+  cancelled
 }
 
 enum SubscriptionPeriod {
@@ -26,7 +26,7 @@ model User {
   email      String  @unique
   name       String?
   image      String?
-  plan       Plan    @default(free)
+  plan       Plan?
   customerId String? @unique
 
   Subscription Subscription?
@@ -44,6 +44,7 @@ model Subscription {
   startDate DateTime @default(now())
   endDate   DateTime
 
+  canceledAtPeriodEnd Boolean @default(false) 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

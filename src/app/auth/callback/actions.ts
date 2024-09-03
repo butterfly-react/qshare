@@ -2,6 +2,7 @@
 
 import prisma from "@/db/prisma";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { v4 as uuidv4 } from 'uuid'
 
 export async function checkAuthStatus() {
 	const { getUser } = getKindeServerSession();
@@ -19,6 +20,7 @@ export async function checkAuthStatus() {
 				email: user.email!,
 				name: user.given_name + " " + user.family_name,
 				image: user.picture,
+				customerId: uuidv4(),
 			},
 		});
 	}

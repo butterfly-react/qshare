@@ -3,6 +3,8 @@ import { stripe } from "@/lib/stripe";
 import Stripe from "stripe";
 
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET!;
+const BACKEND_BASE_URL = process.env.STRIPE_BACKEND_BASE_URL!;
+const ACCESS_TOKEN = process.env.STRIPE_SUBSCRIPTION_SAVE_ACCESS_TOKEN!
 
 export async function POST(req: Request) {
 	const body = await req.text();
@@ -31,6 +33,8 @@ export async function POST(req: Request) {
             
 				const customerId = session.customer as string;
 				const customerDetails = session.customer_details;
+				const qshareAdmin = session.custom_fields[0]?.text?.value
+				const subDomain = session.custom_fields[1]?.text?.value
 
 				if (customerDetails?.email) {
 					const user = await prisma.user.findUnique({ where: { email: customerDetails.email } });
@@ -83,6 +87,29 @@ export async function POST(req: Request) {
                                     where: { id: user.id },
                                     data: { plan: "popular" },
                                 });
+
+								await fetch(`${BACKEND_BASE_URL}/subscription/save`, {
+									method: "POST",
+									headers: {
+										"Content-Type": "application/json",
+										"x-strfe-access-header": `${ACCESS_TOKEN}`,
+									},
+									body: JSON.stringify({
+										action: "create",
+										subscriptionId: session.subscription,
+										user: {
+											email: customerDetails.email,
+											customerId: customerId,
+										},
+										startDate: new Date().toISOString(),
+										endDate: endDate.toISOString(),
+										plan: "premium",
+										period: priceId === process.env.STRIPE_YEARLY_PRICE_ID_FOUR_USERS! ? "yearly" : "monthly",
+										canceledAtPeriodEnd: false,
+										additionalData: { qshareAdmin, subDomain}
+										
+									}),
+								}); 
                             }else if(priceId === process.env.STRIPE_MONTHLY_PRICE_ID_TEN_USERS! || priceId === process.env.STRIPE_YEARLY_PRICE_ID_TEN_USERS!){
                                 await prisma.subscription.upsert({
                                     where: { userId: user.id! },
@@ -105,6 +132,29 @@ export async function POST(req: Request) {
                                     where: { id: user.id },
                                     data: { plan: "premium" },
                                 });
+
+								await fetch(`${BACKEND_BASE_URL}/subscription/save`, {
+									method: "POST",
+									headers: {
+										"Content-Type": "application/json",
+										"x-strfe-access-header": `${ACCESS_TOKEN}`,
+									},
+									body: JSON.stringify({
+										action: "create",
+										subscriptionId: session.subscription,
+										user: {
+											email: customerDetails.email,
+											customerId: customerId,
+										},
+										startDate: new Date().toISOString(),
+										endDate: endDate.toISOString(),
+										plan: "premium",
+										period: priceId === process.env.STRIPE_YEARLY_PRICE_ID_TEN_USERS! ? "yearly" : "monthly",
+										canceledAtPeriodEnd: false,
+										additionalData: { qshareAdmin, subDomain}
+										
+									}),
+								}); 
                                 
                             }else if(priceId === process.env.STRIPE_MONTHLY_PRICE_ID_TWENTY_USERS! || priceId === process.env.STRIPE_YEARLY_PRICE_ID_TWENTY_USERS!){
                                 await prisma.subscription.upsert({
@@ -128,6 +178,31 @@ export async function POST(req: Request) {
                                     where: { id: user.id },
                                     data: { plan: "enterprise" },
                                 });
+
+								await fetch(`${BACKEND_BASE_URL}/subscription/save`, {
+									method: "POST",
+									headers: {
+										"Content-Type": "application/json",
+										"x-strfe-access-header": `${ACCESS_TOKEN}`,
+									},
+									body: JSON.stringify({
+										action: "create",
+										subscriptionId: session.subscription,
+										user: {
+											email: customerDetails.email,
+											customerId: customerId,
+										},
+										startDate: new Date().toISOString(),
+										endDate: endDate.toISOString(),
+										plan: "premium",
+										period: priceId === process.env.STRIPE_YEARLY_PRICE_ID_TWENTY_USERS! ? "yearly" : "monthly",
+										canceledAtPeriodEnd: false,
+										additionalData: { qshareAdmin, subDomain}
+										
+									}),
+								}); 
+
+							
                                 
                             }
                             
@@ -137,6 +212,53 @@ export async function POST(req: Request) {
 					}
 				}
 				break;
+				case "customer.subscription.updated": {
+					const subscription = await stripe.subscriptions.retrieve(
+						(event.data.object as Stripe.Subscription).id
+					);
+					
+					
+					if(subscription.cancel_at && subscription.cancel_at_period_end){
+						
+						const canceledAtPeriodEnd = subscription.cancel_at_period_end;
+						await fetch(`${BACKEND_BASE_URL}/subscription/save`, {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+								"x-strfe-access-header": "UUKLD7B06gTxPttHTFvgfekswwdRmltcHCAqKukknuevlOOZU9RebIkbw5UOOcIaCrxmjkLueWu1Sv0HfpXLeO2bilzFH3Rl3SHG",
+							},
+							body: JSON.stringify({
+								action: "update",
+								subscriptionId: subscription.id,
+								canceledAtPeriodEnd: canceledAtPeriodEnd,
+								user: {
+									customerId: subscription.customer,
+								},
+							}),
+						});
+						
+					}
+
+					const user = await prisma.user.findUnique({
+						where: { customerId: subscription.customer as string },
+					});
+				
+					
+					if (user && subscription) {
+						const canceledAtPeriodEnd = subscription.cancel_at_period_end;
+						
+						await prisma.subscription.update({
+							where: { userId: user.id! },
+							data: {
+								canceledAtPeriodEnd: canceledAtPeriodEnd, // Set based on Stripe subscription
+							},
+						});
+					}
+
+					
+					
+                }
+				break;
 			case "customer.subscription.deleted": {
 				const subscription = await stripe.subscriptions.retrieve((event.data.object as Stripe.Subscription).id);
 				const user = await prisma.user.findUnique({
@@ -145,11 +267,29 @@ export async function POST(req: Request) {
 				if (user) {
 					await prisma.user.update({
 						where: { id: user.id },
-						data: { plan: "canceled" },
+						data: { plan: "cancelled" },
 					});
 				} else {
 					console.error("User not found for the subscription deleted event.");
-					throw new Error("User not found for the subscription deleted event.");
+				
+				}
+
+				try{
+					
+					await fetch(`${BACKEND_BASE_URL}/subscription/save`, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							"x-strfe-access-header": "UUKLD7B06gTxPttHTFvgfekswwdRmltcHCAqKukknuevlOOZU9RebIkbw5UOOcIaCrxmjkLueWu1Sv0HfpXLeO2bilzFH3Rl3SHG",
+						},
+						body: JSON.stringify({
+							action: "delete",
+							subscriptionId: subscription.id,
+							
+						}),
+					});
+				}catch(error){
+					console.log((error as Error).message)
 				}
 
 				break;
