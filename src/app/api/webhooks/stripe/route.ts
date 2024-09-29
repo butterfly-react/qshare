@@ -295,6 +295,54 @@ export async function POST(req: Request) {
 				break;
 			}
 
+			case "invoice.payment_succeeded": {
+				const invoice = event.data.object as Stripe.Invoice;
+				const subscriptionId = invoice.subscription as string;
+		
+				const subscription = await stripe.subscriptions.retrieve(
+				  subscriptionId
+				);
+		
+				try {
+				  const response = await fetch(
+					`${BACKEND_BASE_URL}/subscription/save`,
+					{
+					  method: "POST",
+					  headers: {
+						"Content-Type": "application/json",
+						"x-strfe-access-header": `${ACCESS_TOKEN}`,
+					  },
+					  body: JSON.stringify({
+						action: "renew",
+						subscriptionId: subscription.id,
+						user: {
+						  customerId: subscription.customer,
+						},
+						startDate: new Date(
+						  subscription.current_period_start * 1000
+						).toISOString(),
+						endDate: new Date(
+						  subscription.current_period_end * 1000
+						).toISOString(),
+						canceledAtPeriodEnd: false,
+					  }),
+					}
+				  );
+		
+				  if (!response.ok) {
+					throw new Error(
+					  `Failed to update subscription: ${response.statusText}`
+					);
+				  }
+				} catch (error) {
+				  console.error("Error during subscription renewal:", error);
+				}
+		
+				break;
+			  }
+
+			
+
 			default:
 				console.log(`Unhandled event type ${event.type}`);
 		}
