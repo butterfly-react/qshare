@@ -218,26 +218,30 @@ export async function POST(req: Request) {
 					);
 					
 					
-					if(subscription.cancel_at && subscription.cancel_at_period_end){
-						
+					if (subscription.cancel_at && subscription.cancel_at_period_end) {
 						const canceledAtPeriodEnd = subscription.cancel_at_period_end;
-						await fetch(`${BACKEND_BASE_URL}/subscription/save`, {
-							method: "POST",
-							headers: {
-								"Content-Type": "application/json",
-								"x-strfe-access-header": "UUKLD7B06gTxPttHTFvgfekswwdRmltcHCAqKukknuevlOOZU9RebIkbw5UOOcIaCrxmjkLueWu1Sv0HfpXLeO2bilzFH3Rl3SHG",
-							},
-							body: JSON.stringify({
-								action: "update",
-								subscriptionId: subscription.id,
-								canceledAtPeriodEnd: canceledAtPeriodEnd,
-								user: {
-									customerId: subscription.customer,
-								},
-							}),
-						});
+						const status = subscription.status;
+					  
 						
-					}
+						const body = {
+						  action: "update",
+						  subscriptionId: subscription.id,
+						  canceledAtPeriodEnd: canceledAtPeriodEnd,
+						  user: {
+							customerId: subscription.customer,
+						  },
+						  ...(status !== undefined && { status }), 
+						};
+					  
+						await fetch(`${BACKEND_BASE_URL}/subscription/save`, {
+						  method: "POST",
+						  headers: {
+							"Content-Type": "application/json",
+							"x-strfe-access-header": "UUKLD7B06gTxPttHTFvgfekswwdRmltcHCAqKukknuevlOOZU9RebIkbw5UOOcIaCrxmjkLueWu1Sv0HfpXLeO2bilzFH3Rl3SHG",
+						  },
+						  body: JSON.stringify(body),
+						});
+					  }
 
 					const user = await prisma.user.findUnique({
 						where: { customerId: subscription.customer as string },
