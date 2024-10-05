@@ -32,8 +32,8 @@ export default function Subscription({ searchParams }: Props) {
 
 	return (
 		<main>
-			{/* <Hero />
-			<Pricing /> */}
+			<Hero />
+			<Pricing />
 		</main>
 	);
 }
