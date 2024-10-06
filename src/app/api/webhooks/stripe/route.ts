@@ -11,16 +11,18 @@ export async function POST(req: Request) {
 
   const sig = req.headers.get("stripe-signature")!;
   let event: Stripe.Event;
-
+  
+  
   try {
-    event = stripe.webhooks.constructEvent(body, sig, WEBHOOK_SECRET);
-  } catch (err: any) {
-    console.error("Webhook signature verification failed.", err.message);
-    return new Response(`Webhook Error: ${err.message}`, { status: 400 });
-  }
-
-  // Handle the event
-  try {
+	  event = stripe.webhooks.constructEvent(body, sig, WEBHOOK_SECRET);
+	} catch (err: any) {
+		console.error("Webhook signature verification failed.", err.message);
+		return new Response(`Webhook Error: ${err.message}`, { status: 400 });
+	}
+	
+	// Handle the event
+	try {
+	const s = event.data.object as Stripe.Checkout.Session;
     switch (event.type) {
       case "checkout.session.completed":
         const session = await stripe.checkout.sessions.retrieve(
@@ -245,7 +247,7 @@ export async function POST(req: Request) {
         break;
       case "customer.subscription.updated":
         {
-          console.log("UPDATED");
+  
           const subscription = await stripe.subscriptions.retrieve(
             (event.data.object as Stripe.Subscription).id
           );
@@ -351,9 +353,16 @@ export async function POST(req: Request) {
 				subscription = await stripe.subscriptions.retrieve(
 				  sessionFromStripe.subscription as string
 				);
+				if(!subscription){
+				subscription = await stripe.subscriptions.retrieve(
+					  s.subscription as string
+				);
+
+				}
 			}
         }
-
+		
+	
 	
 
 		if (subscription) {
