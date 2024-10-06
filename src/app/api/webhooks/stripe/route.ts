@@ -45,12 +45,12 @@ export async function POST(req: Request) {
 					const user = await prisma.user.findUnique({ where: { email: customerDetails.email } });
 					if (!user) throw new Error("User not found");
 
-					if (!user.customerId) {
-						await prisma.user.update({
-							where: { id: user.id },
-							data: { customerId },
-						});
-					}
+					// if (!user.customerId) {
+					// 	await prisma.user.update({
+					// 		where: { id: user.id },
+					// 		data: { customerId },
+					// 	});
+					// }
 
 					const lineItems = session.line_items?.data || [];
 
@@ -71,27 +71,27 @@ export async function POST(req: Request) {
 
                             if(priceId === process.env.STRIPE_YEARLY_PRICE_ID_FOUR_USERS! || priceId === process.env.STRIPE_MONTHLY_PRICE_ID_FOUR_USERS!  ){
 
-                                await prisma.subscription.upsert({
-                                    where: { userId: user.id! },
-                                    create: {
-                                        userId: user.id,
-                                        startDate: new Date(),
-                                        endDate: endDate,
-                                        plan: "popular",
-                                        period: priceId === process.env.STRIPE_YEARLY_PRICE_ID_FOUR_USERS! ? "yearly" : "monthly",
-                                    },
-                                    update: {
-                                        plan: "popular",
-                                        period: priceId === process.env.STRIPE_YEARLY_PRICE_ID_FOUR_USERS! ? "yearly" : "monthly",
-                                        startDate: new Date(),
-                                        endDate: endDate,
-                                    },
-                                });
+                                // await prisma.subscription.upsert({
+                                //     where: { userId: user.id! },
+                                //     create: {
+                                //         userId: user.id,
+                                //         startDate: new Date(),
+                                //         endDate: endDate,
+                                //         plan: "popular",
+                                //         period: priceId === process.env.STRIPE_YEARLY_PRICE_ID_FOUR_USERS! ? "yearly" : "monthly",
+                                //     },
+                                //     update: {
+                                //         plan: "popular",
+                                //         period: priceId === process.env.STRIPE_YEARLY_PRICE_ID_FOUR_USERS! ? "yearly" : "monthly",
+                                //         startDate: new Date(),
+                                //         endDate: endDate,
+                                //     },
+                                // });
     
-                                await prisma.user.update({
-                                    where: { id: user.id },
-                                    data: { plan: "popular" },
-                                });
+                                // await prisma.user.update({
+                                //     where: { id: user.id },
+                                //     data: { plan: "popular" },
+                                // });
 
 								await fetch(`${BACKEND_BASE_URL}/subscription/save`, {
 									method: "POST",
@@ -122,27 +122,27 @@ export async function POST(req: Request) {
 									}),
 								}); 
                             }else if(priceId === process.env.STRIPE_MONTHLY_PRICE_ID_TEN_USERS! || priceId === process.env.STRIPE_YEARLY_PRICE_ID_TEN_USERS!){
-                                await prisma.subscription.upsert({
-                                    where: { userId: user.id! },
-                                    create: {
-                                        userId: user.id,
-                                        startDate: new Date(),
-                                        endDate: endDate,
-                                        plan: "premium",
-                                        period: "monthly",
-                                    },
-                                    update: {
-                                        plan: "premium",
-                                        period:  "monthly",
-                                        startDate: new Date(),
-                                        endDate: endDate,
-                                    },
-                                });
+                                // await prisma.subscription.upsert({
+                                //     where: { userId: user.id! },
+                                //     create: {
+                                //         userId: user.id,
+                                //         startDate: new Date(),
+                                //         endDate: endDate,
+                                //         plan: "premium",
+                                //         period: "monthly",
+                                //     },
+                                //     update: {
+                                //         plan: "premium",
+                                //         period:  "monthly",
+                                //         startDate: new Date(),
+                                //         endDate: endDate,
+                                //     },
+                                // });
     
-                                await prisma.user.update({
-                                    where: { id: user.id },
-                                    data: { plan: "premium" },
-                                });
+                                // await prisma.user.update({
+                                //     where: { id: user.id },
+                                //     data: { plan: "premium" },
+                                // });
 
 								await fetch(`${BACKEND_BASE_URL}/subscription/save`, {
 									method: "POST",
@@ -168,27 +168,27 @@ export async function POST(req: Request) {
 								}); 
                                 
                             }else if(priceId === process.env.STRIPE_MONTHLY_PRICE_ID_TWENTY_USERS! || priceId === process.env.STRIPE_YEARLY_PRICE_ID_TWENTY_USERS!){
-                                await prisma.subscription.upsert({
-                                    where: { userId: user.id! },
-                                    create: {
-                                        userId: user.id,
-                                        startDate: new Date(),
-                                        endDate: endDate,
-                                        plan: "enterprise",
-                                        period: "monthly",
-                                    },
-                                    update: {
-                                        plan: "enterprise",
-                                        period:  "yearly",
-                                        startDate: new Date(),
-                                        endDate: endDate,
-                                    },
-                                });
+                                // await prisma.subscription.upsert({
+                                //     where: { userId: user.id! },
+                                //     create: {
+                                //         userId: user.id,
+                                //         startDate: new Date(),
+                                //         endDate: endDate,
+                                //         plan: "enterprise",
+                                //         period: "monthly",
+                                //     },
+                                //     update: {
+                                //         plan: "enterprise",
+                                //         period:  "yearly",
+                                //         startDate: new Date(),
+                                //         endDate: endDate,
+                                //     },
+                                // });
     
-                                await prisma.user.update({
-                                    where: { id: user.id },
-                                    data: { plan: "enterprise" },
-                                });
+                                // await prisma.user.update({
+                                //     where: { id: user.id },
+                                //     data: { plan: "enterprise" },
+                                // });
 
 								await fetch(`${BACKEND_BASE_URL}/subscription/save`, {
 									method: "POST",
@@ -254,21 +254,21 @@ export async function POST(req: Request) {
 						});
 					  }
 
-					const user = await prisma.user.findUnique({
-						where: { customerId: subscription.customer as string },
-					});
+					// const user = await prisma.user.findUnique({
+					// 	where: { customerId: subscription.customer as string },
+					// });
 				
 					
-					if (user && subscription) {
-						const canceledAtPeriodEnd = subscription.cancel_at_period_end;
+					// if (user && subscription) {
+					// 	const canceledAtPeriodEnd = subscription.cancel_at_period_end;
 						
-						await prisma.subscription.update({
-							where: { userId: user.id! },
-							data: {
-								canceledAtPeriodEnd: canceledAtPeriodEnd, // Set based on Stripe subscription
-							},
-						});
-					}
+					// 	await prisma.subscription.update({
+					// 		where: { userId: user.id! },
+					// 		data: {
+					// 			canceledAtPeriodEnd: canceledAtPeriodEnd, // Set based on Stripe subscription
+					// 		},
+					// 	});
+					// }
 
 					
 					
@@ -276,18 +276,20 @@ export async function POST(req: Request) {
 				break;
 			case "customer.subscription.deleted": {
 				const subscription = await stripe.subscriptions.retrieve((event.data.object as Stripe.Subscription).id);
-				const user = await prisma.user.findUnique({
-					where: { customerId: subscription.customer as string },
-				});
-				if (user) {
-					await prisma.user.update({
-						where: { id: user.id },
-						data: { plan: "cancelled" },
-					});
-				} else {
-					console.error("User not found for the subscription deleted event.");
+				// const user = await prisma.user.findUnique({
+				// 	where: { customerId: subscription.customer as string },
+				// });
+				// if (user) {
+				// 	await prisma.user.update({
+				// 		where: { id: user.id },
+				// 		data: { plan: "cancelled" },
+				// 	});
+				// } else {
+				// 	console.error("User not found for the subscription deleted event.");
 				
-				}
+				// }
+
+
 
 				try{
 					
