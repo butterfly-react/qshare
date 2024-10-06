@@ -29,6 +29,11 @@ export async function POST(req: Request) {
 						expand: ["line_items"],
 					}
 				);
+				const subscription = await stripe.subscriptions.retrieve(
+					session.subscription as string
+				  );
+
+				  console.log('SUBSCRIPTION! :', subscription)
 
             
 				const customerId = session.customer as string;
@@ -101,8 +106,14 @@ export async function POST(req: Request) {
 											email: customerDetails.email,
 											customerId: customerId,
 										},
-										startDate: new Date().toISOString(),
-										endDate: endDate.toISOString(),
+										// startDate: new Date().toISOString(),
+										// endDate: endDate.toISOString(),
+										startDate: new Date(
+											subscription.current_period_start * 1000
+										  ).toISOString(),
+										  endDate: new Date(
+											subscription.current_period_end * 1000
+										  ).toISOString(),
 										plan: "premium",
 										period: priceId === process.env.STRIPE_YEARLY_PRICE_ID_FOUR_USERS! ? "yearly" : "monthly",
 										canceledAtPeriodEnd: false,
