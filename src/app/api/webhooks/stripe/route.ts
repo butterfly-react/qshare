@@ -342,8 +342,7 @@ export async function POST(req: Request) {
           subscription = await stripe.subscriptions.retrieve(subscriptionId);
         } 
 		else {
-          sessionId = (event.data.object as Stripe.Invoice)?.metadata
-            ?.session_id;
+          sessionId = (event.data.object as Stripe.Invoice)?.metadata?.session_id;
 			if(sessionId){
 
 				const sessionFromStripe = await stripe.checkout.sessions.retrieve(
